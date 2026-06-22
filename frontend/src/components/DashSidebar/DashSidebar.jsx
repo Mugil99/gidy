@@ -15,10 +15,10 @@ const DashSidebar = () => {
           <MdOutlineSpaceDashboard />
           <span>Dashboard</span>
         </NavLink>
-        <NavLink to="/dashboard" className="sidebar-link">
+        {/* <NavLink to="/dashboard" className="sidebar-link">
           <MdOutlineDataSaverOn />
           <span>Gidy Logs</span>
-        </NavLink>
+        </NavLink> */}
       </div>
       <div className="sidebar-footer mt-auto">
         <div className="dashsidebar-upgrade">

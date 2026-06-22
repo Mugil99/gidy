@@ -424,3 +424,4 @@
 {"level":"info","message":"500 GET /api/dashboard-stats 899924ms","meta":{},"timestamp":"2026-06-22T14:15:15.231Z"}
 {"level":"info","message":"500 GET /api/logs?page=1&limit=10&search=&severity=&status=&sortField=timestamp&sortOrder=desc 90075ms","meta":{},"timestamp":"2026-06-22T14:17:07.647Z"}
 {"level":"info","message":"500 GET /api/dashboard-stats 90057ms","meta":{},"timestamp":"2026-06-22T14:17:07.648Z"}
+{"level":"info","message":"Listening on port 5000","timestamp":"2026-06-22T14:31:41.635Z"}
