@@ -1,6 +1,8 @@
 import express from "express";
 import { uploadLogs, getLogs, getDashboardStats } from "../controllers/logController.js";
 
+console.log("ROUTER.JS LOADED");
+
 const router = express.Router();
 
 router.post("/upload", uploadLogs);

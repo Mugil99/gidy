@@ -8,6 +8,8 @@ import morgan from "morgan";
 import helmet from "helmet";
 // import { autoIpBlock, notFoundTracker } from "./middlewares/autoIpBlock.js";
 
+console.log("APP.JS LOADED");
+
 const api = express();
 
 api.use(morgan("[:method] :status :url HTTP/:http-version :response-time ms"));
@@ -44,6 +46,5 @@ api.use(express.urlencoded({ extended: true }));
 api.use("/api", Router);
 
 api.use(express.static("public"));
-
 
 export default api;
