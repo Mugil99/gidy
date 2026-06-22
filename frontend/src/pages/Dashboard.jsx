@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import publicAPI from "../api/publicAPI";
 import { Database, TriangleAlert, CircleCheckBig, CircleX } from "lucide-react";
+import Loader from "@/components/Loader/Loader";
 function Dashboard() {
   const [logs, setLogs] = useState([]);
   const [status, setStatus] = useState("");
@@ -102,192 +103,198 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       <h2 className="dashboard-title">Audit Logs Dashboard</h2>
-      <div className="stats-container app_bg">
-        <div className="stat-card">
-          <div className="stat-icon total">
-            <Database size={30} strokeWidth={1.8} />
-          </div>
-          <div>
-            <small>Total Logs</small>
-            <h6>{stats.totalLogs}</h6>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon high-risk">
-            <TriangleAlert size={30} strokeWidth={1.8} />
-          </div>
-          <div>
-            <small>High Risk</small>
-            <h6>{stats.highSeverity}</h6>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon resolved">
-            <CircleCheckBig size={30} strokeWidth={1.8} />
-          </div>
-          <div>
-            <small>Resolved</small>
-            <h6>{stats.resolved}</h6>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon unresolved">
-            <CircleX size={30} strokeWidth={1.8} />
-          </div>
-          <div>
-            <small>Unresolved</small>
-            <h6>{stats.unresolved}</h6>
-          </div>
-        </div>
-      </div>
-      <div className="upload-section">
-        <input
-          type="file"
-          accept=".json"
-          onChange={(e) => {
-            setSelectedFile(e.target.files[0]);
-          }}
-          ref={fileInputRef}
-        />
-
-        <button className="upload-btn" onClick={handleUpload}>
-          Upload Logs
-        </button>
-
-        <button className="sample-btn" onClick={handleDownloadSample}>
-          Download Sample File
-        </button>
-      </div>
-      <div className="filter-section">
-        <input
-          className="search-input"
-          type="text"
-          placeholder="Search Actor..."
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(1);
-          }}
-        />
-
-        <select
-          className="filter-select"
-          value={severity}
-          onChange={(e) => {
-            setSeverity(e.target.value);
-            setPage(1);
-          }}
-        >
-          <option value="">All Severity</option>
-          <option value="HIGH">HIGH</option>
-          <option value="MEDIUM">MEDIUM</option>
-          <option value="LOW">LOW</option>
-        </select>
-        <select
-          className="filter-select"
-          value={status}
-          onChange={(e) => {
-            setStatus(e.target.value);
-            setPage(1);
-          }}
-        >
-          <option value="">All Status</option>
-          <option value="Resolved">Resolved</option>
-          <option value="Unresolved">Unresolved</option>
-        </select>
-        <select
-          className="filter-select"
-          value={sortOrder}
-          onChange={(e) => {
-            setSortOrder(e.target.value);
-          }}
-        >
-          <option value="desc">Latest First</option>
-          <option value="asc">Oldest First</option>
-        </select>
-        <button className="clear-filter-btn" onClick={handleClearFilters}>
-          Clear Filters
-        </button>
-      </div>
-
       {loading ? (
-        <div className="loading-text">Loading logs...</div>
+        <Loader />
       ) : (
-        <div className="table-wrapper">
-          {" "}
-          <table className="logs-table">
-            <thead>
-              <tr>
-                <th>Actor</th>
-                <th>Role</th>
-                <th>Action</th>
-                <th>Resource</th>
-                <th>Resource Type</th>
-                <th>IP Address</th>
-                <th>Region</th>
-                <th>Severity</th>
-                <th>Status</th>
-                <th>Timestamp</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {logs.length > 0 ? (
-                logs.map((log) => (
-                  <tr key={log._id}>
-                    <td>{log.actor}</td>
-                    <td>{log.role}</td>
-                    <td>{log.action}</td>
-                    <td>{log.resource}</td>
-                    <td>{log.resourceType}</td>
-                    <td>{log.ipAddress}</td>
-                    <td>{log.region}</td>
-
-                    <td>
-                      <span className={log.severity === "HIGH" ? "severity-badge high" : log.severity === "MEDIUM" ? "severity-badge medium" : "severity-badge low"}>{log.severity}</span>
-                    </td>
-
-                    <td>{log.status}</td>
-
-                    <td>{new Date(log.timestamp).toLocaleString()}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="10" className="no-results">
-                    No logs found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <div className="pagination">
-        <button className="page-nav" disabled={page === 1} onClick={() => setPage(page - 1)}>
-          &lt;
-        </button>
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1)
-          .filter((pageNum) => pageNum === 1 || pageNum === totalPages || (pageNum >= page - 1 && pageNum <= page + 1))
-          .map((pageNum, index, arr) => (
-            <div key={pageNum}>
-              {index > 0 && arr[index - 1] !== pageNum - 1 && <span className="ellipsis">...</span>}
-
-              <button className={`page-number ${page === pageNum ? "active" : ""}`} onClick={() => setPage(pageNum)}>
-                {pageNum}
-              </button>
+        <>
+          <div className="stats-container app_bg">
+            <div className="stat-card">
+              <div className="stat-icon total">
+                <Database size={30} strokeWidth={1.8} />
+              </div>
+              <div>
+                <small>Total Logs</small>
+                <h6>{stats.totalLogs}</h6>
+              </div>
             </div>
-          ))}
 
-        <button className="page-nav" disabled={page === totalPages} onClick={() => setPage(page + 1)}>
-          &gt;
-        </button>
-      </div>
+            <div className="stat-card">
+              <div className="stat-icon high-risk">
+                <TriangleAlert size={30} strokeWidth={1.8} />
+              </div>
+              <div>
+                <small>High Risk</small>
+                <h6>{stats.highSeverity}</h6>
+              </div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-icon resolved">
+                <CircleCheckBig size={30} strokeWidth={1.8} />
+              </div>
+              <div>
+                <small>Resolved</small>
+                <h6>{stats.resolved}</h6>
+              </div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-icon unresolved">
+                <CircleX size={30} strokeWidth={1.8} />
+              </div>
+              <div>
+                <small>Unresolved</small>
+                <h6>{stats.unresolved}</h6>
+              </div>
+            </div>
+          </div>
+          <div className="upload-section">
+            <input
+              type="file"
+              accept=".json"
+              onChange={(e) => {
+                setSelectedFile(e.target.files[0]);
+              }}
+              ref={fileInputRef}
+            />
+
+            <button className="upload-btn" onClick={handleUpload}>
+              Upload Logs
+            </button>
+
+            <button className="sample-btn" onClick={handleDownloadSample}>
+              Download Sample File
+            </button>
+          </div>
+          <div className="filter-section">
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search Actor..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+            />
+
+            <select
+              className="filter-select"
+              value={severity}
+              onChange={(e) => {
+                setSeverity(e.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">All Severity</option>
+              <option value="HIGH">HIGH</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="LOW">LOW</option>
+            </select>
+            <select
+              className="filter-select"
+              value={status}
+              onChange={(e) => {
+                setStatus(e.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">All Status</option>
+              <option value="Resolved">Resolved</option>
+              <option value="Unresolved">Unresolved</option>
+            </select>
+            <select
+              className="filter-select"
+              value={sortOrder}
+              onChange={(e) => {
+                setSortOrder(e.target.value);
+              }}
+            >
+              <option value="desc">Latest First</option>
+              <option value="asc">Oldest First</option>
+            </select>
+            <button className="clear-filter-btn" onClick={handleClearFilters}>
+              Clear Filters
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="loading-text">Loading logs...</div>
+          ) : (
+            <div className="table-wrapper">
+              {" "}
+              <table className="logs-table">
+                <thead>
+                  <tr>
+                    <th>Actor</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                    <th>Resource</th>
+                    <th>Resource Type</th>
+                    <th>IP Address</th>
+                    <th>Region</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {logs.length > 0 ? (
+                    logs.map((log) => (
+                      <tr key={log._id}>
+                        <td>{log.actor}</td>
+                        <td>{log.role}</td>
+                        <td>{log.action}</td>
+                        <td>{log.resource}</td>
+                        <td>{log.resourceType}</td>
+                        <td>{log.ipAddress}</td>
+                        <td>{log.region}</td>
+
+                        <td>
+                          <span className={log.severity === "HIGH" ? "severity-badge high" : log.severity === "MEDIUM" ? "severity-badge medium" : "severity-badge low"}>{log.severity}</span>
+                        </td>
+
+                        <td>{log.status}</td>
+
+                        <td>{new Date(log.timestamp).toLocaleString()}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="10" className="no-results">
+                        No logs found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <div className="pagination">
+            <button className="page-nav" disabled={page === 1} onClick={() => setPage(page - 1)}>
+              &lt;
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((pageNum) => pageNum === 1 || pageNum === totalPages || (pageNum >= page - 1 && pageNum <= page + 1))
+              .map((pageNum, index, arr) => (
+                <div key={pageNum}>
+                  {index > 0 && arr[index - 1] !== pageNum - 1 && <span className="ellipsis">...</span>}
+
+                  <button className={`page-number ${page === pageNum ? "active" : ""}`} onClick={() => setPage(pageNum)}>
+                    {pageNum}
+                  </button>
+                </div>
+              ))}
+
+            <button className="page-nav" disabled={page === totalPages} onClick={() => setPage(page + 1)}>
+              &gt;
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
