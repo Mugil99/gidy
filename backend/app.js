@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
 import corsOptions from "./config/cors.js";
-import Router from "./routes/router.js";
 import logger from "./logger.js";
 import expressWinston from "express-winston";
 import morgan from "morgan";
 import helmet from "helmet";
+import router from "./routes/router.js";
 // import { autoIpBlock, notFoundTracker } from "./middlewares/autoIpBlock.js";
 
 console.log("APP.JS LOADED");
@@ -43,7 +43,7 @@ api.use(express.json());
 
 api.use(express.urlencoded({ extended: true }));
 
-api.use("/api", Router);
+api.use("/api", router);
 
 api.use(express.static("public"));
 
